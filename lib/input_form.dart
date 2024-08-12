@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hira_converter/app_notifier_provider.dart';
 
-class InputForm extends StatefulWidget {
+class InputForm extends ConsumerStatefulWidget {
   const InputForm({super.key});
 
   @override
-  State<InputForm> createState() => _InputFormState();
+  ConsumerState<InputForm> createState() => _InputFormState();
 }
 
-class _InputFormState extends State<InputForm> {
+class _InputFormState extends ConsumerState<InputForm> {
   final _formKey = GlobalKey<FormState>();
   final _textEditingController = TextEditingController();
 
@@ -38,12 +40,13 @@ class _InputFormState extends State<InputForm> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final formState = _formKey.currentState!;
               if (!formState.validate()) {
                 return;
               }
-              debugPrint('text = ${_textEditingController.text}');
+              final sentence = _textEditingController.text;
+              await ref.read(appNotifierProvider.notifier).convert(sentence);
             },
             child: const Text("変換"),
           )
